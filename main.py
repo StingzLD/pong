@@ -1,5 +1,6 @@
 from ball import Ball
 from paddle import Paddle
+from scoreboard import Scoreboard
 from turtle import Screen
 import time
 
@@ -14,15 +15,16 @@ screen.title("PONG")
 screen.tracer(0)
 screen.listen()
 
+# Initialize scoreboard
+sb = Scoreboard()
+
 # Initialize Player 1's paddle
 paddle1 = Paddle(start_x=-360, start_y=0)
-paddle1.speed("fastest")
 screen.onkey(paddle1.move_up, "w")
 screen.onkey(paddle1.move_down, "s")
 
 # Initialize Player 2's paddle
 paddle2 = Paddle(start_x=350, start_y=0)
-paddle2.speed("fastest")
 screen.onkey(paddle2.move_up, "Up")
 screen.onkey(paddle2.move_down, "Down")
 
@@ -31,7 +33,7 @@ ball = Ball()
 
 game_running = True
 while game_running:
-    time.sleep(0.05)
+    time.sleep(ball.move_speed)
     screen.update()
     ball.move()
 
@@ -45,15 +47,11 @@ while game_running:
         ball.bounce_x()
 
     # Detect goal scored
-    if ball.xcor() > 320 and ball.distance(paddle2) > 50:
-        # Player 1 scores
-        pass
-    elif ball.xcor() < -330 and ball.distance(paddle1) > 50:
-        # Player 2 scores
-        pass
-
-    # Reset ball
-    if ball.xcor() > 370 or ball.xcor() < -380:
+    if ball.xcor() > 370:
+        sb.increase_score("player1")
+        ball.new_ball()
+    elif ball.xcor() < -380:
+        sb.increase_score("player2")
         ball.new_ball()
 
 screen.exitonclick()
